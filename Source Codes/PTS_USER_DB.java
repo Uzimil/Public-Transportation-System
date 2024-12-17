@@ -1,0 +1,891 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package PTS.pts;
+
+import java.awt.Component;
+import java.awt.Toolkit;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.*;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
+
+
+/**
+ *
+ * @author Rodulfo R. Lopez
+ */
+public class PTS_USER_DB extends javax.swing.JFrame {
+     private HashMap<String, String[]> vehicleData;
+     private HashMap<String, String> terminalImages;
+     private Connection sqlcon;
+
+     
+    private static PreparedStatement pst;
+    private static ResultSet result;
+    
+    public PTS_USER_DB() {
+        initComponents();
+        jPopupMenu1.add(jPanel1);
+        SwingUtilities.invokeLater(this::connectLoadData);
+        initializeVehicleData();
+        
+    }
+    
+    public void connectLoadData(){
+        try{
+            connectToDB();
+            UpdateDB();
+            showTableDb();
+        }catch(Exception e){
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE );
+        }
+    }
+    
+    public void connectToDB() throws SQLException{
+        String SUrl = "jdbc:MySQL://localhost:3306/available_vehicle";
+        String SUser = "root";
+        String Spass = "";
+        sqlcon = DriverManager.getConnection(SUrl, SUser, Spass);
+    }
+    
+    private void showError(String message) {
+         JOptionPane.showMessageDialog(new PTS_USER_DB.JFrame(), message,"Error", JOptionPane.ERROR_MESSAGE);
+
+    }
+    
+    public void UpdateDB(){
+        
+        String sUrl = "jdbc:mysql://localhost:3306/available_vehicle";
+        String sUser = "root";
+        String spass = "";
+        
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            sqlcon = DriverManager.getConnection(sUrl, sUser, spass);
+            pst = sqlcon.prepareStatement("SELECT * FROM avehicle");
+            
+            result = pst.executeQuery();
+            ResultSetMetaData resultData = result.getMetaData();
+            
+            int q = resultData.getColumnCount();
+            
+            DefaultTableModel RecordTable = (DefaultTableModel)TableInfo.getModel();
+            RecordTable.setRowCount(0);
+            
+            while(result.next()){
+                Vector columnData = new Vector();
+                
+                for(int r = 1; r <= q; r++){
+                    columnData.add(result.getString("vehicle_type"));
+                    columnData.add(result.getString("Start_route"));
+                    columnData.add(result.getString("Ending_route"));
+                    columnData.add(result.getString("vehicle_model"));    
+                }
+                RecordTable.addRow(columnData);
+            }
+        }
+        catch (Exception ex){
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
+    public void showTableDb()throws SQLException{
+        if(sqlcon == null || sqlcon.isClosed()){
+            System.out.println("CHECK DATABASE CONNECTION");
+            return;
+        }
+        String query = "SELECT * FROM avehicle";
+        try(PreparedStatement stmt = sqlcon.prepareStatement(query)){
+            
+            ResultSet result = stmt.executeQuery();
+            
+            DefaultTableModel RecordTable = (DefaultTableModel)TableInfo.getModel();
+            RecordTable.setRowCount(0);
+            
+            
+            
+            while(result.next()){
+                /*StringBuilder details = new StringBuilder();
+                ResultSetMetaData metadata = result.getMetaData();
+                int columnCount = metadata.getColumnCount();
+                */
+                String r_email = result.getString("vehicle_type");
+                String first_name = result.getString("Start_route");
+                String last_name = result.getString("Ending_route");
+                String r_add = result.getString("vehicle_model");
+              
+                RecordTable.addRow(new Object[]{r_email, first_name,last_name, r_add});
+            }
+        }catch (SQLException e){
+            JOptionPane.showMessageDialog(this, "Error loading data" + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE );
+        }     
+    }
+    
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    public void close(){
+        WindowEvent closeWindow = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeWindow);
+    }
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        Panel2 = new javax.swing.JPanel();
+        Details_panel = new javax.swing.JPanel();
+        Back_button = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        Vehicle_Info = new javax.swing.JTextPane();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        Terminal_List_combo = new javax.swing.JComboBox<>();
+        jLabel9 = new javax.swing.JLabel();
+        Vec_number = new javax.swing.JTextField();
+        submit = new javax.swing.JButton();
+        Picture1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        display_t = new javax.swing.JTable();
+        From_Terminal = new javax.swing.JComboBox<>();
+        Estimated_arrival = new javax.swing.JTextField();
+        Fare = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        To_Terminal = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        SearchBox = new javax.swing.JTextField();
+        Submit = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        TableInfo = new javax.swing.JTable();
+
+        jCheckBox1.setText("jCheckBox1");
+
+        jPopupMenu1.setFocusable(false);
+
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "bajao1", "degracia2" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jList1);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setUndecorated(true);
+
+        Panel2.setBackground(new java.awt.Color(153, 153, 153));
+        Panel2.setEnabled(false);
+        Panel2.setPreferredSize(new java.awt.Dimension(700, 400));
+
+        Details_panel.setBackground(new java.awt.Color(0, 132, 125));
+        Details_panel.setPreferredSize(new java.awt.Dimension(350, 400));
+
+        Back_button.setBackground(new java.awt.Color(102, 102, 102));
+        Back_button.setFont(new java.awt.Font("Candara", 1, 14)); // NOI18N
+        Back_button.setForeground(new java.awt.Color(255, 255, 255));
+        Back_button.setText("Back");
+        Back_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Back_buttonActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Candara", 1, 18)); // NOI18N
+        jLabel7.setText("DETAILS");
+
+        Vehicle_Info.setEditable(false);
+        Vehicle_Info.setBackground(new java.awt.Color(204, 255, 255));
+        Vehicle_Info.setFocusable(false);
+        Vehicle_Info.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Vehicle_InfoMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(Vehicle_Info);
+
+        jLabel4.setFont(new java.awt.Font("Candara", 1, 14)); // NOI18N
+        jLabel4.setText("Available Vehicles:\n");
+
+        jLabel5.setFont(new java.awt.Font("Candara", 1, 14)); // NOI18N
+        jLabel5.setText("Vehicle Information:");
+
+        Terminal_List_combo.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        Terminal_List_combo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Claveria Terminal", "Agora Terminal", "Gingoog Terminal", "Balingasag Terminal", "Balingoan Terminal", "Salay Terminal" }));
+        Terminal_List_combo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Terminal_List_comboActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setBackground(new java.awt.Color(40, 40, 40));
+        jLabel9.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(40, 40, 40));
+        jLabel9.setText("Vehicle Id:");
+
+        Vec_number.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        Vec_number.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Vec_numberActionPerformed(evt);
+            }
+        });
+
+        submit.setBackground(new java.awt.Color(102, 102, 102));
+        submit.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        submit.setForeground(new java.awt.Color(255, 255, 255));
+        submit.setText("Submit");
+        submit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                submitMouseClicked(evt);
+            }
+        });
+        submit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitActionPerformed(evt);
+            }
+        });
+
+        display_t.setBackground(new java.awt.Color(204, 255, 255));
+        display_t.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        display_t.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Vehicle Type", "Vehicle Id", "Destination", "Dept. Time"
+            }
+        ));
+        display_t.setEnabled(false);
+        jScrollPane1.setViewportView(display_t);
+
+        javax.swing.GroupLayout Details_panelLayout = new javax.swing.GroupLayout(Details_panel);
+        Details_panel.setLayout(Details_panelLayout);
+        Details_panelLayout.setHorizontalGroup(
+            Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Details_panelLayout.createSequentialGroup()
+                .addGroup(Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(Details_panelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(Details_panelLayout.createSequentialGroup()
+                                .addGroup(Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Details_panelLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(Details_panelLayout.createSequentialGroup()
+                                        .addComponent(jLabel5)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(Details_panelLayout.createSequentialGroup()
+                                        .addComponent(jLabel9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(Vec_number, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(submit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Picture1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(Details_panelLayout.createSequentialGroup()
+                                .addGroup(Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(Details_panelLayout.createSequentialGroup()
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(Terminal_List_combo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(Details_panelLayout.createSequentialGroup()
+                        .addGroup(Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(Details_panelLayout.createSequentialGroup()
+                                .addGap(148, 148, 148)
+                                .addComponent(jLabel7))
+                            .addGroup(Details_panelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(Back_button, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        Details_panelLayout.setVerticalGroup(
+            Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Details_panelLayout.createSequentialGroup()
+                .addGap(13, 13, 13)
+                .addComponent(Back_button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Terminal_List_combo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(Details_panelLayout.createSequentialGroup()
+                        .addComponent(Picture1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(323, 323, 323))
+                    .addGroup(Details_panelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(Details_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(submit)
+                            .addComponent(jLabel9)
+                            .addComponent(Vec_number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(117, 117, 117))))
+        );
+
+        Terminal_List_combo.getAccessibleContext().setAccessibleName("cb1");
+
+        From_Terminal.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        From_Terminal.setForeground(new java.awt.Color(40, 40, 40));
+        From_Terminal.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Claveria Terminal", "Agora Terminal", "Gingoog Terminal", "Balingasag Terminal", "Balingoan Terminal", "Salay Terminal" }));
+        From_Terminal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                From_TerminalActionPerformed(evt);
+            }
+        });
+
+        Estimated_arrival.setEditable(false);
+        Estimated_arrival.setBackground(new java.awt.Color(255, 255, 255));
+        Estimated_arrival.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        Estimated_arrival.setForeground(new java.awt.Color(40, 40, 40));
+        Estimated_arrival.setText("Estimated Arrival: ");
+        Estimated_arrival.setFocusable(false);
+        Estimated_arrival.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Estimated_arrivalActionPerformed(evt);
+            }
+        });
+
+        Fare.setEditable(false);
+        Fare.setBackground(new java.awt.Color(255, 255, 255));
+        Fare.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        Fare.setForeground(new java.awt.Color(40, 40, 40));
+        Fare.setText("Fare:");
+        Fare.setFocusable(false);
+        Fare.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FareActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Candara", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(220, 227, 238));
+        jLabel2.setText("From ");
+
+        To_Terminal.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        To_Terminal.setForeground(new java.awt.Color(40, 40, 40));
+        To_Terminal.setPreferredSize(new java.awt.Dimension(127, 20));
+        To_Terminal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                To_TerminalActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Candara", 1, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(220, 227, 238));
+        jLabel3.setText("To");
+
+        jLabel1.setFont(new java.awt.Font("Candara", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(220, 227, 238));
+        jLabel1.setText("Search Here: ");
+
+        SearchBox.setFont(new java.awt.Font("Candara", 0, 12)); // NOI18N
+        SearchBox.setForeground(new java.awt.Color(40, 40, 40));
+        SearchBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchBoxActionPerformed(evt);
+            }
+        });
+        SearchBox.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                SearchBoxKeyReleased(evt);
+            }
+        });
+
+        Submit.setBackground(new java.awt.Color(102, 102, 102));
+        Submit.setFont(new java.awt.Font("Candara", 1, 12)); // NOI18N
+        Submit.setForeground(new java.awt.Color(255, 255, 255));
+        Submit.setText("Submit");
+        Submit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SubmitActionPerformed(evt);
+            }
+        });
+
+        TableInfo.setBackground(new java.awt.Color(204, 255, 255));
+        TableInfo.setFont(new java.awt.Font("Candara", 0, 12)); // NOI18N
+        TableInfo.setForeground(new java.awt.Color(40, 40, 40));
+        TableInfo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Vehicle Type", "Start", "Destination", "Vehicle Model"
+            }
+        ));
+        TableInfo.setEnabled(false);
+        jScrollPane4.setViewportView(TableInfo);
+
+        javax.swing.GroupLayout Panel2Layout = new javax.swing.GroupLayout(Panel2);
+        Panel2.setLayout(Panel2Layout);
+        Panel2Layout.setHorizontalGroup(
+            Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel2Layout.createSequentialGroup()
+                .addComponent(Details_panel, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(Panel2Layout.createSequentialGroup()
+                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(Panel2Layout.createSequentialGroup()
+                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(Panel2Layout.createSequentialGroup()
+                                        .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(From_Terminal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(Estimated_arrival))
+                                        .addGap(57, 57, 57)
+                                        .addComponent(Submit)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel2Layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jLabel1)))
+                                .addGap(18, 18, 18)
+                                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(SearchBox)
+                                    .addComponent(Fare)
+                                    .addComponent(jLabel3)
+                                    .addComponent(To_Terminal, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(0, 14, Short.MAX_VALUE))))
+        );
+        Panel2Layout.setVerticalGroup(
+            Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel2Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addGap(0, 0, 0)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(From_Terminal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(To_Terminal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Submit))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Estimated_arrival, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Fare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(Panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(SearchBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
+            .addComponent(Details_panel, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(Panel2, javax.swing.GroupLayout.PREFERRED_SIZE, 849, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(Panel2, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+    private void initializeVehicleData() {
+        // Initialize vehicle data with sample values
+        vehicleData = new HashMap<>();
+        vehicleData.put("BUS123", new String[]{"DEGRACIA", "123-456-7890", "B123"});
+        vehicleData.put("BUS456", new String[]{"BAJAO", "234-567-8901", "B456"});
+        vehicleData.put("VAN123", new String[]{"REX", "345-678-9012", "V123"});
+        vehicleData.put("VAN456", new String[]{"MILWAUKEE", "456-789-0123", "V456"});
+    }
+    private void Back_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Back_buttonActionPerformed
+        close();
+        PTS_MAIN_LOGIN loginadmin = new PTS_MAIN_LOGIN();
+        loginadmin.setVisible(true);
+        loginadmin.pack();
+        loginadmin.setLocationRelativeTo(null);   // TODO add your handling code here:
+    }//GEN-LAST:event_Back_buttonActionPerformed
+    
+    
+    private void Terminal_List_comboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Terminal_List_comboActionPerformed
+        
+        String chosenT = Terminal_List_combo.getSelectedItem().toString();
+        
+        String sUrl = "jdbc:mysql://localhost:3306/available_vehicle";
+        String sUser = "root";
+        String spass = "";
+        
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(sUrl, sUser, spass);
+            pst = con.prepareStatement("SELECT * FROM avehicle WHERE Start_route = '"+chosenT+"'");
+            
+            result = pst.executeQuery();
+            ResultSetMetaData resultData = result.getMetaData();
+            
+            int q = resultData.getColumnCount();
+            
+            DefaultTableModel RecordTable = (DefaultTableModel)display_t.getModel();
+            RecordTable.setRowCount(0);
+            
+            while(result.next()){
+                Vector columnData = new Vector();
+                
+                for(int r = 1; r <= q; r++){
+                    columnData.add(result.getString("vehicle_type"));
+                    columnData.add(result.getString("vehicle_ID"));
+                    columnData.add(result.getString("Ending_route"));
+                    columnData.add(result.getString("Departure_time"));
+
+                    
+                }
+                RecordTable.addRow(columnData);
+            }
+        }
+        catch (Exception ex){
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        
+        
+        
+    }//GEN-LAST:event_Terminal_List_comboActionPerformed
+
+    private void Estimated_arrivalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Estimated_arrivalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Estimated_arrivalActionPerformed
+
+    private void To_TerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_To_TerminalActionPerformed
+    
+    
+    }//GEN-LAST:event_To_TerminalActionPerformed
+    
+            
+  
+    private void FareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FareActionPerformed
+         // TODO add your handling code here:
+    }//GEN-LAST:event_FareActionPerformed
+
+    private void submitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitActionPerformed
+        // Get the selected vehicle type from the combobox
+        String chosenvec = Vec_number.getText().trim();
+       
+        if (chosenvec.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Please enter Vehicle ID.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+        String sUrl = "jdbc:mysql://localhost:3306/available_vehicle";
+        String sUser = "root";
+        String spass = "";
+        
+        String query = "SELECT * FROM avehicle WHERE vehicle_ID = '"+chosenvec+"'";
+        try(Connection con = DriverManager.getConnection(sUrl, sUser, spass);
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery(query)){
+                
+            if(result.next()){
+                String driver = result.getString("Driver");
+                String driver_contact = result.getString("Driver_contact");
+                String plate_number = result.getString("plate_num");
+                
+                Vehicle_Info.setText("Driver's Name: "+ driver + "\nDriver's Contact: " + driver_contact + "\nPlate Number: " + plate_number);
+            } else {
+                JOptionPane.showMessageDialog(null, "No vehicle found with the provided ID.", "Not Found", JOptionPane.WARNING_MESSAGE);
+            }
+
+        }
+        catch (Exception ex){
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        }
+    }//GEN-LAST:event_submitActionPerformed
+      
+     
+    private void From_TerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_From_TerminalActionPerformed
+    if (From_Terminal.getSelectedItem().equals("Claveria Terminal"))
+    {
+     To_Terminal.removeAllItems();
+     To_Terminal.setSelectedItem(null);
+     To_Terminal.addItem("Agora Terminal");
+    }
+     else
+     if(From_Terminal.getSelectedItem().equals("Agora Terminal"))
+    {
+     To_Terminal.removeAllItems();
+     To_Terminal.setSelectedItem(null);
+     To_Terminal.addItem("Claveria Terminal");
+     To_Terminal.addItem("Gingoog Terminal");
+     To_Terminal.addItem("Balingoan Terminal");
+     To_Terminal.addItem("Salay Terminal");
+     To_Terminal.addItem("Balingasag Terminal");
+    }
+    else
+     if(From_Terminal.getSelectedItem().equals("Gingoog Terminal"))
+    {
+     To_Terminal.removeAllItems();
+     To_Terminal.setSelectedItem(null);
+     To_Terminal.addItem("Claveria Terminal");
+     To_Terminal.addItem("Agora Terminal");
+     To_Terminal.addItem("Balingoan Terminal");
+     To_Terminal.addItem("Salay Terminal");
+     To_Terminal.addItem("Balingasag Terminal");
+    }
+    else
+     if(From_Terminal.getSelectedItem().equals("Balingoan Terminal"))
+    {
+     To_Terminal.removeAllItems();
+     To_Terminal.setSelectedItem(null);
+     To_Terminal.addItem("Agora Terminal");
+     To_Terminal.addItem("Gingoog Terminal");
+     To_Terminal.addItem("Salay Terminal");
+     To_Terminal.addItem("Balingasag Terminal");
+    }
+    else
+     if(From_Terminal.getSelectedItem().equals("Salay Terminal"))
+    {
+     To_Terminal.removeAllItems();
+     To_Terminal.setSelectedItem(null);
+     To_Terminal.addItem("Agora Terminal");
+     To_Terminal.addItem("Gingoog Terminal");
+     To_Terminal.addItem("Balingoan Terminal");
+     To_Terminal.addItem("Balingasag Terminal");
+    }
+    else
+     if(From_Terminal.getSelectedItem().equals("Balingasag Terminal"))
+    {
+     To_Terminal.removeAllItems();
+     To_Terminal.setSelectedItem(null);
+     To_Terminal.addItem("Agora Terminal");
+     To_Terminal.addItem("Gingoog Terminal");
+     To_Terminal.addItem("Balingoan Terminal");
+     To_Terminal.addItem("Salay Terminal");
+    }
+    
+    
+    
+    }//GEN-LAST:event_From_TerminalActionPerformed
+
+    private void SubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitActionPerformed
+    String fromTerminal = (String) From_Terminal.getSelectedItem();
+    String toTerminal = (String) To_Terminal.getSelectedItem();
+        
+    String estimatedtime = "";
+    String fareamount = "";
+
+    if (From_Terminal != null && To_Terminal != null) {
+            if ((fromTerminal.equals("Claveria Terminal") && toTerminal.equals("Agora Terminal")) || (fromTerminal.equals("Agora Terminal") && toTerminal.equals("Claveria Terminal")))
+            {
+                estimatedtime = "1hr & 16mins";
+                fareamount= "100 PHP";
+            } else if ((fromTerminal.equals("Agora Terminal") && toTerminal.equals("Gingoog Terminal")) || (fromTerminal.equals("Gingoog Terminal") && toTerminal.equals("Agora Terminal")))
+            {
+                estimatedtime = "3hrs";
+                fareamount = "250 PHP";
+            } else if ((fromTerminal.equals("Agora Terminal") && toTerminal.equals("Balingasag Terminal")) || (fromTerminal.equals("Balingasag Terminal") && toTerminal.equals("Agora Terminal")))
+            {
+                estimatedtime = "1hr & 29mins";
+                fareamount = "130 PHP";
+            } else if ((fromTerminal.equals("Agora Terminal") && toTerminal.equals("Balingoan Terminal")) || (fromTerminal.equals("Balingoan Terminal") && toTerminal.equals("Agora Terminal")))
+            {
+                estimatedtime = "2hrs & 20mins";
+                fareamount = "200 PHP";
+            } else if ((fromTerminal.equals("Agora Terminal") && toTerminal.equals("Salay Terminal")) || (fromTerminal.equals("Salay Terminal") && toTerminal.equals("Agora Terminal")))
+            {
+                estimatedtime = "1hr & 49mins";
+                fareamount = "180 PHP";
+            } else if (fromTerminal.equals("Gingoog Terminal") && toTerminal.equals("Claveria Terminal"))
+            {
+                estimatedtime = "1hr & 10mins";
+                fareamount = "250 PHP";
+            } else if ((fromTerminal.equals("Gingoog Terminal") && toTerminal.equals("Balingasag Terminal")) || (fromTerminal.equals("Balingasag Terminal") && toTerminal.equals("Gingoog Terminal")))
+            {
+                estimatedtime = "1hr & 43mins";
+                fareamount = "150 PHP";
+            }  else if ((fromTerminal.equals("Gingoog Terminal") && toTerminal.equals("Balingoan Terminal")) || (fromTerminal.equals("Balingoan Terminal") && toTerminal.equals("Gingoog Terminal")))
+            {
+                estimatedtime = "54mins";
+                fareamount = "70 PHP";
+            } else if ((fromTerminal.equals("Gingoog Terminal") && toTerminal.equals("Salay Terminal")) || (fromTerminal.equals("Salay Terminal") && toTerminal.equals("Gingoog Terminal")))
+            {
+                estimatedtime = "1hr & 20mins";
+                fareamount = "110 PHP";
+            } else if ((fromTerminal.equals("Balingasag Terminal") && toTerminal.equals("Balingoan Terminal")) || (fromTerminal.equals("Balingoan Terminal") && toTerminal.equals("Balingasag Terminal")))
+            {
+                estimatedtime = "49mins";
+                fareamount = "50 PHP";
+            } else if ((fromTerminal.equals("Balingasag Terminal") && toTerminal.equals("Salay Terminal")) || (fromTerminal.equals("Salay Terminal") && toTerminal.equals("Balingasag Terminal")))
+            {
+                estimatedtime = "21mins";
+                fareamount = "20 PHP";
+            } else if ((fromTerminal.equals("Balingoan Terminal") && toTerminal.equals("Salay Terminal")) || (fromTerminal.equals("Salay Terminal") && toTerminal.equals("Balingoan Terminal")))
+            {
+                estimatedtime = "33mins";
+                fareamount = "30 PHP";
+            } 
+            Estimated_arrival.setText(estimatedtime);
+            Fare.setText(fareamount); 
+            
+            } else {
+        
+            Estimated_arrival.setText("Please select both terminals");
+            Fare.setText("");
+
+}
+    
+
+ 
+    
+
+    }//GEN-LAST:event_SubmitActionPerformed
+
+    private void Vec_numberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Vec_numberActionPerformed
+        // Optional: Trigger button click when pressing Enter in the text field
+     
+   
+    }//GEN-LAST:event_Vec_numberActionPerformed
+
+    private void submitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_submitMouseClicked
+
+    private void Vehicle_InfoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Vehicle_InfoMouseClicked
+      // Optional: Handle mouse click on JTextPane (if needed)
+      
+
+    }//GEN-LAST:event_Vehicle_InfoMouseClicked
+
+    private void SearchBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchBoxActionPerformed
+    
+        
+    }//GEN-LAST:event_SearchBoxActionPerformed
+
+    private void SearchBoxKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchBoxKeyReleased
+    
+        DefaultTableModel obj=(DefaultTableModel) TableInfo.getModel();
+        TableRowSorter<DefaultTableModel> obj1=new TableRowSorter<>(obj);
+        TableInfo.setRowSorter(obj1);
+        obj1.setRowFilter(RowFilter.regexFilter(SearchBox.getText()));
+    }//GEN-LAST:event_SearchBoxKeyReleased
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(PTS_USER_DB.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(PTS_USER_DB.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(PTS_USER_DB.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(PTS_USER_DB.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new PTS_USER_DB().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Back_button;
+    private javax.swing.JPanel Details_panel;
+    private javax.swing.JTextField Estimated_arrival;
+    private javax.swing.JTextField Fare;
+    private javax.swing.JComboBox<String> From_Terminal;
+    private javax.swing.JPanel Panel2;
+    private javax.swing.JLabel Picture1;
+    private javax.swing.JTextField SearchBox;
+    private javax.swing.JButton Submit;
+    private javax.swing.JTable TableInfo;
+    private javax.swing.JComboBox<String> Terminal_List_combo;
+    private javax.swing.JComboBox<String> To_Terminal;
+    private javax.swing.JTextField Vec_number;
+    private javax.swing.JTextPane Vehicle_Info;
+    private javax.swing.JTable display_t;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JList<String> jList1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JButton submit;
+    // End of variables declaration//GEN-END:variables
+
+    private static class JFrame extends Component {
+
+        public JFrame() {
+        }
+    }
+}
